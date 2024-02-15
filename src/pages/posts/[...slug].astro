@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro'
+import Header from '../../components/Header.tsx'
+import Footer from '../../components/Footer.vue'
+import Social from '../../components/Social.svelte'
+import HeaderTop from '../../components/HeaderTop.tsx'
+
+// Importa la funcion getCollection desde el paquete astro:content
+import { getCollection } from 'astro:content'
+// Define una funcion asincrona para obtener las rutas estaticas
+export async function getStaticPaths() {
+	// Obtiene una coleccion de datos llamada "tips"
+	const posts = await getCollection('tips')
+
+	// Mapea los datos y devuelve un array de objetos con propiedades "params" y "props"
+	return posts.map((post) => ({
+		params: { slug: post.slug },
+		props: post,
+	}))
+}
+// Asigna el objeto "props" de Astro a la constante "post"
+const post = Astro.props
+
+// Renderiza el contenido de la publicacion
+const { Content } = await post.render()
+---
+
+<!-- Renderiza el componente "Content" -->
+<Base title="AstroBuild.tips" description="Mi primera pagina">
+	<HeaderTop client:load />
+	<Header title="AstroBuild.tips" />
+	<Content />
+	<Social />
+	<Footer />
+</Base>
